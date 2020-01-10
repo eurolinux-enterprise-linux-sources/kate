@@ -1,13 +1,13 @@
 Name:    kate
-Summary: Advanced Text Editor 
+Summary: Advanced Text Editor
 Version: 4.10.5
-Release: 1%{?dist}
+Release: 4%{?dist}
 
 # kwrite LGPLv2+
 # kate: app LGPLv2, plugins, LGPLv2 and LGPLv2+ and GPLv2+
 # ktexteditor: LGPLv2
 # katepart: LGPLv2
-License: LGPLv2 and LGPLv2+ and GPLv2+ 
+License: LGPLv2 and LGPLv2+ and GPLv2+
 URL:     https://projects.kde.org/projects/kde/kdebase/kate
 %global revision %(echo %{version} | cut -d. -f3)
 %if %{revision} >= 50
@@ -18,6 +18,7 @@ URL:     https://projects.kde.org/projects/kde/kdebase/kate
 Source0: http://download.kde.org/%{stable}/%{version}/src/%{name}-%{version}.tar.xz
 
 # upstream patches
+Patch0:  kate-4.10.5-properly-remove-composed-characters.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: kactivities-devel >= %{version}
@@ -27,7 +28,7 @@ BuildRequires: kdelibs4-devel >= %{version}
 #BuildRequires: pykde4-devel >= %{version}
 BuildRequires: pkgconfig(QJson)
 
-Requires: kde-runtime%{?_kde4_version: >= %{_kde4_version}}
+Requires: kde-runtime >= 4.10.5
 Requires: %{name}-part%{?_isa} = %{version}-%{release}
 Requires: %{name}-libs%{?_isa} = %{version}-%{release}
 
@@ -41,22 +42,22 @@ Requires: kdelibs4-devel
 %description devel
 %{summary}.
 
-%package libs 
+%package libs
 Summary:  Runtime files for %{name}
 # when split occurred
 Obsoletes: kdesdk-libs < 4.6.95-10
 Requires: %{name} = %{version}-%{release}
-%description libs 
+%description libs
 %{summary}.
 
-%package part 
-Summary: Kate kpart plugin 
+%package part
+Summary: Kate kpart plugin
 License: LGPLv2
 # when split occurred
 Conflicts: kdelibs < 6:4.6.95-10
 # katesyntaxhighlightingrc conflicts with kdelibs3, see http://bugzilla.redhat.com/883529
 Conflicts: kdelibs3 < 3.5.10-40
-%description part 
+%description part
 %{summary}.
 
 %package -n kwrite
@@ -64,8 +65,8 @@ Summary: Text Editor
 License: LGPLv2+
 # when split occurred
 Conflicts: kdebase < 6:4.6.95-10
-Requires: %{name}-part%{?_isa} = %{version}-%{release} 
-Requires: kde-runtime%{?_kde4_version: >= %{_kde4_version}}
+Requires: %{name}-part%{?_isa} = %{version}-%{release}
+Requires: kde-runtime >= 4.10.5
 %description -n kwrite
 %{summary}.
 
@@ -73,6 +74,7 @@ Requires: kde-runtime%{?_kde4_version: >= %{_kde4_version}}
 %prep
 %setup -q
 
+%patch0 -p1 -b .properly-remove-composed-characters
 
 %build
 mkdir -p %{_target_platform}
@@ -195,6 +197,16 @@ fi
 
 
 %changelog
+* Tue May 17 2016 Jan Grulich <jgrulich@redhat.com> - 4.10.5-4
+- Properly remove composed characters
+  Resolves: bz#1037962
+
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 4.10.5-3
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 4.10.5-2
+- Mass rebuild 2013-12-27
+
 * Sun Jun 30 2013 Than Ngo <than@redhat.com> - 4.10.5-1
 - 4.10.5
 

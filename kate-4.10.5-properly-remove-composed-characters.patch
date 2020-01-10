@@ -1,0 +1,68 @@
+diff --git a/part/document/katedocument.cpp b/part/document/katedocument.cpp
+index 3ba2ddd..1409aaf 100644
+--- a/part/document/katedocument.cpp
++++ b/part/document/katedocument.cpp
+@@ -2684,7 +2684,9 @@ void KateDocument::backspace( KateView *view, const KTextEditor::Cursor& c )
+     {
+       // ordinary backspace
+       //c.cursor.col--;
+-      removeText(KTextEditor::Range(line, col-1, line, col));
++      KTextEditor::Cursor beginCursor(line, view->currentTextLayout()->previousCursorPosition(c.column()));
++      KTextEditor::Cursor endCursor(line, col);
++      removeText(KTextEditor::Range(beginCursor, endCursor));
+     }
+     else
+     {
+@@ -2705,8 +2707,11 @@ void KateDocument::backspace( KateView *view, const KTextEditor::Cursor& c )
+         // only spaces on left side of cursor
+         indent( KTextEditor::Range( line, 0, line, 0), -1);
+       }
+-      else
+-        removeText(KTextEditor::Range(line, col-1, line, col));
++      else {
++        KTextEditor::Cursor beginCursor(line, view->currentTextLayout()->previousCursorPosition(c.column()));
++        KTextEditor::Cursor endCursor(line, col);
++        removeText(KTextEditor::Range(beginCursor, endCursor));
++      }
+     }
+   }
+   else
+@@ -2740,7 +2745,8 @@ void KateDocument::del( KateView *view, const KTextEditor::Cursor& c )
+ 
+   if( c.column() < (int) m_buffer->plainLine(c.line())->length())
+   {
+-    removeText(KTextEditor::Range(c, 1));
++    KTextEditor::Cursor endCursor(c.line(), view->currentTextLayout()->nextCursorPosition(c.column()));
++    removeText(KTextEditor::Range(c, endCursor));
+   }
+   else if ( c.line() < lastLine() )
+   {
+diff --git a/part/view/kateview.cpp b/part/view/kateview.cpp
+index 39f0956..b081657 100644
+--- a/part/view/kateview.cpp
++++ b/part/view/kateview.cpp
+@@ -2341,6 +2341,12 @@ QString KateView::currentTextLine( )
+   return m_doc->line( cursorPosition().line() );
+ }
+ 
++QTextLayout * KateView::currentTextLayout() const
++{
++    KateLineLayoutPtr thisLine = m_viewInternal->cache()->line(cursorPosition().line());
++    return thisLine->layout();
++}
++
+ QString KateView::searchPattern() const
+ {
+     if (hasSearchBar()) {
+diff --git a/part/view/kateview.h b/part/view/kateview.h
+index 69dbe1b..25126d0 100644
+--- a/part/view/kateview.h
++++ b/part/view/kateview.h
+@@ -382,6 +382,7 @@ class KATEPART_TESTS_EXPORT KateView : public KTextEditor::View,
+     bool isOverwriteMode() const;
+     enum KTextEditor::View::EditMode viewEditMode() const {return isOverwriteMode() ? KTextEditor::View::EditOverwrite : KTextEditor::View::EditInsert;}
+     QString currentTextLine();
++    QTextLayout * currentTextLayout() const;
+ 
+     /**
+      * The current search pattern.
