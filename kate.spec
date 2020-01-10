@@ -1,7 +1,7 @@
 Name:    kate
 Summary: Advanced Text Editor 
 Version: 4.10.5
-Release: 3%{?dist}
+Release: 1%{?dist}
 
 # kwrite LGPLv2+
 # kate: app LGPLv2, plugins, LGPLv2 and LGPLv2+ and GPLv2+
@@ -195,12 +195,6 @@ fi
 
 
 %changelog
-* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 4.10.5-3
-- Mass rebuild 2014-01-24
-
-* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 4.10.5-2
-- Mass rebuild 2013-12-27
-
 * Sun Jun 30 2013 Than Ngo <than@redhat.com> - 4.10.5-1
 - 4.10.5
 
