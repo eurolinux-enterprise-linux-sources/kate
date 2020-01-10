@@ -1,7 +1,7 @@
 Name:    kate
 Summary: Advanced Text Editor
 Version: 4.10.5
-Release: 4%{?dist}
+Release: 6%{?dist}
 
 # kwrite LGPLv2+
 # kate: app LGPLv2, plugins, LGPLv2 and LGPLv2+ and GPLv2+
@@ -19,6 +19,7 @@ Source0: http://download.kde.org/%{stable}/%{version}/src/%{name}-%{version}.tar
 
 # upstream patches
 Patch0:  kate-4.10.5-properly-remove-composed-characters.patch
+Patch1:  kate-allow-to-save-files-in-readonly-directory.patch
 
 BuildRequires: desktop-file-utils
 BuildRequires: kactivities-devel >= %{version}
@@ -75,6 +76,7 @@ Requires: kde-runtime >= 4.10.5
 %setup -q
 
 %patch0 -p1 -b .properly-remove-composed-characters
+%patch1 -p1 -b .allow-to-save-files-in-readonly-directory
 
 %build
 mkdir -p %{_target_platform}
@@ -197,6 +199,14 @@ fi
 
 
 %changelog
+* Wed Feb 07 2018 Jan Grulich <jgrulich@redhat.com> - 4.10.5-6
+- Do not forget to truncate files in write protected folders
+  Resolves: bz#1382541
+
+* Mon Oct 16 2017 Jan Grulich <jgrulich@redhat.com> - 4.10.5-5
+- Allow to save files in readonly directories
+  Resolves: bz#1382541
+
 * Tue May 17 2016 Jan Grulich <jgrulich@redhat.com> - 4.10.5-4
 - Properly remove composed characters
   Resolves: bz#1037962

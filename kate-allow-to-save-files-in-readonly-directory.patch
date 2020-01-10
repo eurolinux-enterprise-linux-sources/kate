@@ -1,0 +1,25 @@
+diff --git a/part/buffer/katetextbuffer.cpp b/part/buffer/katetextbuffer.cpp
+index 6c0c80f..34e93be 100644
+--- a/part/buffer/katetextbuffer.cpp
++++ b/part/buffer/katetextbuffer.cpp
+@@ -719,7 +719,10 @@ bool TextBuffer::save (const QString &filename)
+    * use KSaveFile for save write + rename
+    */
+   KSaveFile saveFile (filename);
+-  if (!saveFile.open())
++
++  saveFile.setDirectWriteFallback(true);
++
++  if (!saveFile.open(QIODevice::WriteOnly | QIODevice::Truncate))
+     return false;
+
+   /**
+@@ -734,7 +737,7 @@ bool TextBuffer::save (const QString &filename)
+    * try to open, if new file
+    */
+   if (deleteFile) {
+-    if (!file->open (QIODevice::WriteOnly)) {
++    if (!file->open (QIODevice::WriteOnly | QIODevice::Truncate)) {
+       delete file;
+       return false;
+     }
